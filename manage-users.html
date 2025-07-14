@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - FoodNow Admin</title>
+    <link href="./src/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="navbar bg-secondary-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="admin-dashboard.html" class="mr-4 p-2 rounded-lg hover:bg-secondary-600">
+                        <span class="text-xl text-white">←</span>
+                    </a>
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-2">⚙️</span>
+                        <span class="text-xl font-bold text-white">Manage Users</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="admin-dashboard.html" class="text-white hover:text-gray-200 font-medium">Dashboard</a>
+                    <a href="pending-approvals.html" class="text-white hover:text-gray-200 font-medium">Approvals</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Filters and Search -->
+        <div class="card p-6 mb-6">
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div class="flex-1 max-w-md">
+                    <input 
+                        type="text" 
+                        id="searchInput"
+                        placeholder="Search users by name or email..." 
+                        class="input-field w-full"
+                    >
+                </div>
+                <div class="flex gap-2">
+                    <button class="user-filter-btn active" data-filter="all">All Users</button>
+                    <button class="user-filter-btn" data-filter="customer">Customers</button>
+                    <button class="user-filter-btn" data-filter="restaurant">Restaurants</button>
+                    <button class="user-filter-btn" data-filter="blocked">Blocked</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="card overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-bold text-gray-800">Users List</h2>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Orders</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Users will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="px-6 py-3 bg-gray-50 border-t border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-gray-700">
+                        Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">1,247</span> users
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">Previous</button>
+                        <button class="px-3 py-1 text-sm bg-primary-500 text-white rounded">1</button>
+                        <button class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">2</button>
+                        <button class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">3</button>
+                        <button class="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Details Modal -->
+    <div id="userModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">User Details</h3>
+                <button id="closeModal" class="text-gray-500 hover:text-gray-700">✕</button>
+            </div>
+            <div id="modalContent">
+                <!-- User details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Auth } from './src/auth.js';
+        import { Animations } from './src/animations.js';
+
+        // Check if user is logged in and is an admin
+        const user = Auth.getUser();
+        if (!user || user.role !== 'admin') {
+            window.location.href = 'admin-login.html';
+        }
+
+        // Mock users data
+        const mockUsers = [
+            {
+                id: 1,
+                name: "John Doe",
+                email: "john@example.com",
+                phone: "+91 9876543210",
+                type: "customer",
+                joinedDate: "2023-06-15",
+                totalOrders: 24,
+                totalSpent: 4580,
+                status: "active",
+                lastActive: "2024-01-17"
+            },
+            {
+                id: 2,
+                name: "Pizza Palace",
+                email: "owner@pizzapalace.com",
+                phone: "+91 9876543211",
+                type: "restaurant",
+                joinedDate: "2023-03-20",
+                totalOrders: 156,
+                totalRevenue: 45230,
+                status: "active",
+                lastActive: "2024-01-17"
+            },
+            {
+                id: 3,
+                name: "Sarah Wilson",
+                email: "sarah@example.com",
+                phone: "+91 9876543212",
+                type: "customer",
+                joinedDate: "2023-08-10",
+                totalOrders: 12,
+                totalSpent: 2340,
+                status: "active",
+                lastActive: "2024-01-16"
+            },
+            {
+                id: 4,
+                name: "Burger King",
+                email: "admin@burgerking.com",
+                phone: "+91 9876543213",
+                type: "restaurant",
+                joinedDate: "2023-01-05",
+                totalOrders: 289,
+                totalRevenue: 78450,
+                status: "active",
+                lastActive: "2024-01-17"
+            },
+            {
+                id: 5,
+                name: "Mike Johnson",
+                email: "mike@example.com",
+                phone: "+91 9876543214",
+                type: "customer",
+                joinedDate: "2023-11-22",
+                totalOrders: 3,
+                totalSpent: 890,
+                status: "blocked",
+                lastActive: "2024-01-10"
+            }
+        ];
+
+        let currentFilter = 'all';
+        let filteredUsers = [...mockUsers];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderUsers();
+            setupEventListeners();
+            Animations.fadeIn('.card');
+        });
+
+        function renderUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            
+            if (filteredUsers.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                            No users found matching your criteria
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filteredUsers.map(user => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <img 
+                                src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=FF6B00&color=fff" 
+                                alt="${user.name}"
+                                class="w-10 h-10 rounded-full mr-3"
+                            >
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">${user.name}</div>
+                                <div class="text-sm text-gray-500">${user.email}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            user.type === 'customer' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
+                        }">
+                            ${user.type === 'customer' ? '👤 Customer' : '🏪 Restaurant'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ${new Date(user.joinedDate).toLocaleDateString()}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <div>${user.totalOrders}</div>
+                        <div class="text-xs text-gray-500">
+                            ${user.type === 'customer' ? `₹${user.totalSpent}` : `₹${user.totalRevenue} revenue`}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            user.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }">
+                            ${user.status === 'active' ? '✓ Active' : '✗ Blocked'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button 
+                                onclick="viewUser(${user.id})" 
+                                class="text-blue-600 hover:text-blue-900"
+                            >
+                                View
+                            </button>
+                            <button 
+                                onclick="toggleUserStatus(${user.id})" 
+                                class="${user.status === 'active' ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900'}"
+                            >
+                                ${user.status === 'active' ? 'Block' : 'Unblock'}
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function setupEventListeners() {
+            // Filter buttons
+            document.querySelectorAll('.user-filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.user-filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    filterUsers();
+                });
+            });
+
+            // Search input
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                filterUsers(query);
+            });
+
+            // Modal close
+            document.getElementById('closeModal').addEventListener('click', closeModal);
+            document.getElementById('userModal').addEventListener('click', (e) => {
+                if (e.target.id === 'userModal') {
+                    closeModal();
+                }
+            });
+        }
+
+        function filterUsers(searchQuery = '') {
+            filteredUsers = mockUsers.filter(user => {
+                const matchesFilter = currentFilter === 'all' || 
+                    (currentFilter === 'blocked' && user.status === 'blocked') ||
+                    (currentFilter !== 'blocked' && user.type === currentFilter);
+                
+                const matchesSearch = searchQuery === '' ||
+                    user.name.toLowerCase().includes(searchQuery) ||
+                    user.email.toLowerCase().includes(searchQuery);
+                
+                return matchesFilter && matchesSearch;
+            });
+            
+            renderUsers();
+        }
+
+        function viewUser(id) {
+            const user = mockUsers.find(u => u.id === id);
+            if (!user) return;
+
+            document.getElementById('modalContent').innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex items-center">
+                        <img 
+                            src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=FF6B00&color=fff" 
+                            alt="${user.name}"
+                            class="w-16 h-16 rounded-full mr-4"
+                        >
+                        <div>
+                            <h4 class="text-xl font-bold text-gray-800">${user.name}</h4>
+                            <p class="text-gray-600">${user.email}</p>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                user.type === 'customer' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
+                            }">
+                                ${user.type === 'customer' ? '👤 Customer' : '🏪 Restaurant'}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-600">Phone Number</p>
+                            <p class="font-medium">${user.phone}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Joined Date</p>
+                            <p class="font-medium">${new Date(user.joinedDate).toLocaleDateString()}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Total Orders</p>
+                            <p class="font-medium">${user.totalOrders}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">${user.type === 'customer' ? 'Total Spent' : 'Total Revenue'}</p>
+                            <p class="font-medium">₹${user.type === 'customer' ? user.totalSpent : user.totalRevenue}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Status</p>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                user.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            }">
+                                ${user.status === 'active' ? '✓ Active' : '✗ Blocked'}
+                            </span>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Last Active</p>
+                            <p class="font-medium">${new Date(user.lastActive).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3 pt-4 border-t">
+                        <button 
+                            onclick="toggleUserStatus(${user.id}); closeModal();" 
+                            class="flex-1 ${user.status === 'active' ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white py-2 px-4 rounded-lg transition-colors"
+                        >
+                            ${user.status === 'active' ? 'Block User' : 'Unblock User'}
+                        </button>
+                        <button 
+                            onclick="sendMessage(${user.id})" 
+                            class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors"
+                        >
+                            Send Message
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('userModal').classList.remove('hidden');
+            Animations.modalIn('#userModal > div');
+        }
+
+        function toggleUserStatus(id) {
+            const user = mockUsers.find(u => u.id === id);
+            if (user) {
+                user.status = user.status === 'active' ? 'blocked' : 'active';
+                showNotification(`${user.name} has been ${user.status}!`, user.status === 'active' ? 'success' : 'error');
+                filterUsers();
+            }
+        }
+
+        function sendMessage(id) {
+            const user = mockUsers.find(u => u.id === id);
+            if (user) {
+                showNotification(`Message sent to ${user.name}`, 'success');
+            }
+        }
+
+        function closeModal() {
+            Animations.modalOut('#userModal > div', () => {
+                document.getElementById('userModal').classList.add('hidden');
+            });
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            Animations.slideIn(notification, 'right');
+            
+            setTimeout(() => {
+                Animations.modalOut(notification, () => {
+                    document.body.removeChild(notification);
+                });
+            }, 3000);
+        }
+
+        // Make functions globally available
+        window.viewUser = viewUser;
+        window.toggleUserStatus = toggleUserStatus;
+        window.sendMessage = sendMessage;
+        window.closeModal = closeModal;
+    </script>
+
+    <style>
+        .user-filter-btn {
+            @apply px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors;
+        }
+        .user-filter-btn.active {
+            @apply bg-secondary-500 text-white border-secondary-500;
+        }
+    </style>
+</body>
+</html>

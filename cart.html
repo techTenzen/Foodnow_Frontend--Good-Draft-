@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - FoodNow</title>
+    <link href="./src/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <button onclick="history.back()" class="mr-4 p-2 rounded-lg hover:bg-gray-100">
+                        <span class="text-xl">←</span>
+                    </button>
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-2">🍽️</span>
+                        <span class="text-xl font-bold text-secondary-500">FoodNow</span>
+                    </div>
+                </div>
+                <h1 class="text-xl font-bold text-gray-800">Your Cart</h1>
+                <a href="home.html" class="text-primary-500 hover:text-primary-600 font-medium">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div id="cartContent">
+            <!-- Cart content will be populated here -->
+        </div>
+    </div>
+
+    <script type="module">
+        import { Auth } from './src/auth.js';
+        import { Cart } from './src/data.js';
+        import { Animations } from './src/animations.js';
+
+        // Check if user is logged in
+        const user = Auth.getUser();
+        if (!user) {
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCart();
+            setupEventListeners();
+        });
+
+        function renderCart() {
+            const cartItems = Cart.getItems();
+            const total = Cart.getTotal();
+            const deliveryFee = 40;
+            const tax = Math.round(total * 0.05);
+            const grandTotal = total + deliveryFee + tax;
+
+            if (cartItems.length === 0) {
+                document.getElementById('cartContent').innerHTML = `
+                    <div class="text-center py-16">
+                        <div class="text-6xl mb-4">🛒</div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Your cart is empty</h2>
+                        <p class="text-gray-600 mb-8">Add some delicious items to get started</p>
+                        <a href="home.html" class="btn-primary">Browse Restaurants</a>
+                    </div>
+                `;
+                return;
+            }
+
+            document.getElementById('cartContent').innerHTML = `
+                <div class="lg:flex lg:gap-8">
+                    <!-- Cart Items -->
+                    <div class="lg:flex-1">
+                        <div class="card p-6 mb-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-6">Order Items</h2>
+                            <div class="space-y-4">
+                                ${cartItems.map(item => `
+                                    <div class="cart-item flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                        <div class="flex items-center space-x-4">
+                                            <img 
+                                                src="${item.image}" 
+                                                alt="${item.name}"
+                                                class="w-16 h-16 object-cover rounded-lg"
+                                            >
+                                            <div>
+                                                <h3 class="font-semibold text-gray-800">${item.name}</h3>
+                                                <p class="text-sm text-gray-600">${item.description}</p>
+                                                <p class="text-lg font-bold text-primary-500">₹${item.price}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <button class="quantity-btn minus-btn" data-id="${item.id}">-</button>
+                                            <span class="quantity-display">${item.quantity}</span>
+                                            <button class="quantity-btn plus-btn" data-id="${item.id}">+</button>
+                                            <button class="remove-btn ml-4" data-id="${item.id}">
+                                                <span class="text-red-500">🗑️</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Delivery Address -->
+                        <div class="card p-6 mb-6">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">Delivery Address</h2>
+                            <div class="p-4 border border-gray-200 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="font-semibold">Home</p>
+                                        <p class="text-gray-600">123 Main Street, Bangalore, Karnataka 560001</p>
+                                        <p class="text-sm text-gray-500">Delivery in 25-30 mins</p>
+                                    </div>
+                                    <button class="text-primary-500 hover:text-primary-600 font-medium">Change</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="lg:w-80">
+                        <div class="card p-6 sticky top-24">
+                            <h2 class="text-xl font-bold text-gray-800 mb-6">Order Summary</h2>
+                            
+                            <div class="space-y-3 mb-6">
+                                <div class="flex justify-between">
+                                    <span>Item total</span>
+                                    <span>₹${total}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Delivery fee</span>
+                                    <span>₹${deliveryFee}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Taxes & fees</span>
+                                    <span>₹${tax}</span>
+                                </div>
+                                <hr class="border-gray-200">
+                                <div class="flex justify-between font-bold text-lg">
+                                    <span>Grand Total</span>
+                                    <span class="text-primary-500">₹${grandTotal}</span>
+                                </div>
+                            </div>
+
+                            <!-- Payment Method -->
+                            <div class="mb-6">
+                                <h3 class="font-semibold mb-3">Payment Method</h3>
+                                <div class="space-y-2">
+                                    <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="radio" name="payment" value="card" class="text-primary-500" checked>
+                                        <span class="ml-3">💳 Credit/Debit Card</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="radio" name="payment" value="upi" class="text-primary-500">
+                                        <span class="ml-3">📱 UPI</span>
+                                    </label>
+                                    <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                        <input type="radio" name="payment" value="cod" class="text-primary-500">
+                                        <span class="ml-3">💵 Cash on Delivery</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button id="proceedBtn" class="btn-primary w-full">
+                                Proceed to Payment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Animate cart items
+            Animations.staggerCards('.cart-item', 100);
+        }
+
+        function setupEventListeners() {
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('plus-btn')) {
+                    const itemId = parseInt(e.target.dataset.id);
+                    const cartItems = Cart.getItems();
+                    const item = cartItems.find(i => i.id === itemId);
+                    if (item) {
+                        Cart.updateQuantity(itemId, item.quantity + 1);
+                        renderCart();
+                    }
+                } else if (e.target.classList.contains('minus-btn')) {
+                    const itemId = parseInt(e.target.dataset.id);
+                    const cartItems = Cart.getItems();
+                    const item = cartItems.find(i => i.id === itemId);
+                    if (item) {
+                        Cart.updateQuantity(itemId, item.quantity - 1);
+                        renderCart();
+                    }
+                } else if (e.target.closest('.remove-btn')) {
+                    const itemId = parseInt(e.target.closest('.remove-btn').dataset.id);
+                    Cart.removeItem(itemId);
+                    renderCart();
+                }
+            });
+
+            // Proceed to payment
+            document.addEventListener('click', (e) => {
+                if (e.target.id === 'proceedBtn') {
+                    const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+                    localStorage.setItem('selectedPayment', selectedPayment);
+                    window.location.href = 'payment.html';
+                }
+            });
+        }
+    </script>
+
+    <style>
+        .quantity-btn {
+            @apply w-8 h-8 rounded-full border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white transition-colors flex items-center justify-center font-bold;
+        }
+        .quantity-display {
+            @apply font-bold text-lg min-w-[2rem] text-center;
+        }
+        .remove-btn {
+            @apply p-2 hover:bg-red-50 rounded-lg transition-colors;
+        }
+    </style>
+</body>
+</html>

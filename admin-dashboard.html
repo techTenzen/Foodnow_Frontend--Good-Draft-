@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FoodNow</title>
+    <link href="./src/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="navbar bg-secondary-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-2">⚙️</span>
+                        <span class="text-xl font-bold text-white">Admin Dashboard</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="pending-approvals.html" class="text-white hover:text-gray-200 font-medium">Approvals</a>
+                    <a href="manage-users.html" class="text-white hover:text-gray-200 font-medium">Users</a>
+                    <a href="feedback.html" class="text-white hover:text-gray-200 font-medium">Feedback</a>
+                    <div class="relative">
+                        <button id="profileBtn" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-secondary-600 transition-colors">
+                            <img class="w-8 h-8 rounded-full" src="https://ui-avatars.com/api/?name=Admin&background=0F1C2E&color=fff" alt="Profile">
+                            <span class="hidden md:block font-medium text-white">Admin</span>
+                        </button>
+                        
+                        <!-- Profile Dropdown -->
+                        <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                            <button class="block px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-t-lg w-full text-left">Settings</button>
+                            <hr class="border-gray-200">
+                            <button id="logoutBtn" class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-50 rounded-b-lg">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Overview Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="card p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 mr-4">
+                        <span class="text-2xl">👥</span>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Total Users</p>
+                        <p class="text-2xl font-bold text-gray-800">1,247</p>
+                        <p class="text-xs text-green-600">+12% this month</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 mr-4">
+                        <span class="text-2xl">🏪</span>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Active Restaurants</p>
+                        <p class="text-2xl font-bold text-gray-800">89</p>
+                        <p class="text-xs text-green-600">+5% this month</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-100 mr-4">
+                        <span class="text-2xl">📦</span>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Total Orders</p>
+                        <p class="text-2xl font-bold text-gray-800">24,567</p>
+                        <p class="text-xs text-green-600">+18% this month</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-primary-100 mr-4">
+                        <span class="text-2xl">💰</span>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Total Revenue</p>
+                        <p class="text-2xl font-bold text-gray-800">₹12.4L</p>
+                        <p class="text-xs text-green-600">+25% this month</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <div class="lg:col-span-2">
+                <div class="card p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Recent Activities</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                                    <span class="text-green-600">✓</span>
+                                </div>
+                                <div>
+                                    <p class="font-medium">New restaurant approved</p>
+                                    <p class="text-sm text-gray-600">Pizza Corner - Koramangala</p>
+                                </div>
+                            </div>
+                            <span class="text-sm text-gray-500">2 hours ago</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                                    <span class="text-blue-600">👤</span>
+                                </div>
+                                <div>
+                                    <p class="font-medium">User complaint resolved</p>
+                                    <p class="text-sm text-gray-600">Order #12345 refund processed</p>
+                                </div>
+                            </div>
+                            <span class="text-sm text-gray-500">4 hours ago</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
+                                    <span class="text-yellow-600">⚠️</span>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Restaurant suspended</p>
+                                    <p class="text-sm text-gray-600">Quality issues reported</p>
+                                </div>
+                            </div>
+                            <span class="text-sm text-gray-500">1 day ago</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mr-4">
+                                    <span class="text-primary-600">💰</span>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Commission paid</p>
+                                    <p class="text-sm text-gray-600">₹45,230 to 15 restaurants</p>
+                                </div>
+                            </div>
+                            <span class="text-sm text-gray-500">2 days ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Pending Actions -->
+                <div class="card p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Pending Actions</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-sm">Restaurant Approvals</p>
+                                <p class="text-xs text-gray-600">3 pending applications</p>
+                            </div>
+                            <a href="pending-approvals.html" class="bg-red-100 text-red-600 px-3 py-1 rounded-full text-xs font-medium">
+                                Review
+                            </a>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-sm">User Complaints</p>
+                                <p class="text-xs text-gray-600">7 unresolved issues</p>
+                            </div>
+                            <span class="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full text-xs font-medium">
+                                Urgent
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-sm">Commission Payments</p>
+                                <p class="text-xs text-gray-600">Due in 2 days</p>
+                            </div>
+                            <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-medium">
+                                Scheduled
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="card p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Quick Actions</h3>
+                    <div class="space-y-3">
+                        <a href="pending-approvals.html" class="btn-secondary w-full block text-center">
+                            Review Approvals
+                        </a>
+                        <a href="manage-users.html" class="btn-secondary w-full block text-center">
+                            Manage Users
+                        </a>
+                        <a href="feedback.html" class="btn-secondary w-full block text-center">
+                            View Feedback
+                        </a>
+                        <button class="btn-primary w-full">
+                            Generate Report
+                        </button>
+                    </div>
+                </div>
+
+                <!-- System Status -->
+                <div class="card p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">System Status</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm">Platform Status</span>
+                            <span class="flex items-center text-green-600">
+                                <span class="w-2 h-2 bg-green-600 rounded-full mr-2"></span>
+                                Online
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm">Payment Gateway</span>
+                            <span class="flex items-center text-green-600">
+                                <span class="w-2 h-2 bg-green-600 rounded-full mr-2"></span>
+                                Operational
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm">Database</span>
+                            <span class="flex items-center text-green-600">
+                                <span class="w-2 h-2 bg-green-600 rounded-full mr-2"></span>
+                                Healthy
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm">API Response</span>
+                            <span class="flex items-center text-yellow-600">
+                                <span class="w-2 h-2 bg-yellow-600 rounded-full mr-2"></span>
+                                142ms
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Auth } from './src/auth.js';
+        import { Animations } from './src/animations.js';
+
+        // Check if user is logged in and is an admin
+        const user = Auth.getUser();
+        if (!user || user.role !== 'admin') {
+            window.location.href = 'admin-login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            
+            // Animate elements
+            Animations.staggerCards('.card', 100);
+        });
+
+        function setupEventListeners() {
+            // Profile dropdown
+            document.getElementById('profileBtn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                const dropdown = document.getElementById('profileDropdown');
+                dropdown.classList.toggle('hidden');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', () => {
+                document.getElementById('profileDropdown').classList.add('hidden');
+            });
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                Auth.logout();
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - FoodNow</title>
+    <link href="./src/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="home.html" class="mr-4 p-2 rounded-lg hover:bg-gray-100">
+                        <span class="text-xl">←</span>
+                    </a>
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-2">🍽️</span>
+                        <span class="text-xl font-bold text-secondary-500">FoodNow</span>
+                    </div>
+                </div>
+                <h1 class="text-xl font-bold text-gray-800">My Orders</h1>
+                <div></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Filter Tabs -->
+        <div class="mb-6">
+            <div class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+                <button class="filter-tab active" data-filter="all">All Orders</button>
+                <button class="filter-tab" data-filter="delivered">Delivered</button>
+                <button class="filter-tab" data-filter="cancelled">Cancelled</button>
+            </div>
+        </div>
+
+        <!-- Orders List -->
+        <div id="ordersList" class="space-y-4">
+            <!-- Orders will be populated here -->
+        </div>
+    </div>
+
+    <script type="module">
+        import { Auth } from './src/auth.js';
+        import { orders } from './src/data.js';
+        import { Animations } from './src/animations.js';
+
+        // Check if user is logged in
+        const user = Auth.getUser();
+        if (!user) {
+            window.location.href = 'index.html';
+        }
+
+        // Mock orders data - in real app, this would come from API
+        const mockOrders = [
+            {
+                id: 1001,
+                restaurantName: "Domino's Pizza",
+                restaurantImage: "https://images.pexels.com/photos/315755/pexels-photo-315755.jpeg?auto=compress&cs=tinysrgb&w=100",
+                items: ["Margherita Pizza", "Garlic Bread"],
+                total: 353,
+                status: "delivered",
+                date: "2024-01-15",
+                time: "2:30 PM",
+                rating: 4.5
+            },
+            {
+                id: 1002,
+                restaurantName: "Burger King",
+                restaurantImage: "https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=100",
+                items: ["Whopper", "French Fries", "Coke"],
+                total: 389,
+                status: "preparing",
+                date: "2024-01-16",
+                time: "7:45 PM"
+            },
+            {
+                id: 1003,
+                restaurantName: "Meghana Foods",
+                restaurantImage: "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=100",
+                items: ["Chicken Biryani", "Raita"],
+                total: 349,
+                status: "delivered",
+                date: "2024-01-14",
+                time: "1:15 PM",
+                rating: 5.0
+            },
+            {
+                id: 1004,
+                restaurantName: "Pizza Hut",
+                restaurantImage: "https://images.pexels.com/photos/708587/pexels-photo-708587.jpeg?auto=compress&cs=tinysrgb&w=100",
+                items: ["Pepperoni Pizza", "Breadsticks"],
+                total: 499,
+                status: "cancelled",
+                date: "2024-01-13",
+                time: "8:20 PM",
+                cancelReason: "Restaurant was closed"
+            }
+        ];
+
+        let currentFilter = 'all';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderOrders();
+            setupEventListeners();
+            Animations.fadeIn('#ordersList');
+        });
+
+        function renderOrders() {
+            const filteredOrders = currentFilter === 'all' 
+                ? mockOrders 
+                : mockOrders.filter(order => order.status === currentFilter);
+
+            const container = document.getElementById('ordersList');
+
+            if (filteredOrders.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16">
+                        <div class="text-6xl mb-4">📦</div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">No orders found</h2>
+                        <p class="text-gray-600 mb-8">You haven't placed any orders yet</p>
+                        <a href="home.html" class="btn-primary">Start Ordering</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredOrders.map(order => `
+                <div class="order-card card p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center">
+                            <img 
+                                src="${order.restaurantImage}" 
+                                alt="${order.restaurantName}"
+                                class="w-16 h-16 object-cover rounded-lg mr-4"
+                            >
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-800">${order.restaurantName}</h3>
+                                <p class="text-sm text-gray-600">${order.date} at ${order.time}</p>
+                                <p class="text-sm text-gray-600">Order #${order.id}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge status-${order.status}">${getStatusText(order.status)}</span>
+                            <p class="text-lg font-bold text-primary-500 mt-2">₹${order.total}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="text-gray-600 mb-2">Items ordered:</p>
+                        <p class="text-gray-800">${order.items.join(', ')}</p>
+                    </div>
+                    
+                    <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                        <div class="flex space-x-3">
+                            ${getActionButtons(order)}
+                        </div>
+                        
+                        ${order.rating ? `
+                            <div class="flex items-center">
+                                <span class="text-yellow-500 mr-1">★</span>
+                                <span class="text-sm text-gray-600">${order.rating}/5</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            // Animate order cards
+            Animations.staggerCards('.order-card', 100);
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'delivered': 'Delivered',
+                'preparing': 'Preparing',
+                'on-the-way': 'On the Way',
+                'cancelled': 'Cancelled'
+            };
+            return statusMap[status] || status;
+        }
+
+        function getActionButtons(order) {
+            switch (order.status) {
+                case 'delivered':
+                    return `
+                        <button class="text-primary-500 hover:text-primary-600 text-sm font-medium" onclick="reorder(${order.id})">
+                            Reorder
+                        </button>
+                        <button class="text-primary-500 hover:text-primary-600 text-sm font-medium">
+                            View Receipt
+                        </button>
+                        ${!order.rating ? `
+                            <button class="text-primary-500 hover:text-primary-600 text-sm font-medium" onclick="rateOrder(${order.id})">
+                                Rate Order
+                            </button>
+                        ` : ''}
+                    `;
+                case 'preparing':
+                case 'on-the-way':
+                    return `
+                        <a href="track.html" class="text-primary-500 hover:text-primary-600 text-sm font-medium">
+                            Track Order
+                        </a>
+                        <button class="text-red-500 hover:text-red-600 text-sm font-medium" onclick="cancelOrder(${order.id})">
+                            Cancel Order
+                        </button>
+                    `;
+                case 'cancelled':
+                    return `
+                        <button class="text-primary-500 hover:text-primary-600 text-sm font-medium" onclick="reorder(${order.id})">
+                            Reorder
+                        </button>
+                        <span class="text-sm text-gray-500">Reason: ${order.cancelReason || 'Not specified'}</span>
+                    `;
+                default:
+                    return '';
+            }
+        }
+
+        function setupEventListeners() {
+            // Filter tabs
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Update active state
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Update filter and re-render
+                    currentFilter = tab.dataset.filter;
+                    renderOrders();
+                });
+            });
+        }
+
+        // Global functions for order actions
+        window.reorder = (orderId) => {
+            const order = mockOrders.find(o => o.id === orderId);
+            if (order) {
+                showNotification(`Added ${order.items.length} items to cart from ${order.restaurantName}`, 'success');
+                setTimeout(() => {
+                    window.location.href = 'home.html';
+                }, 1500);
+            }
+        };
+
+        window.cancelOrder = (orderId) => {
+            if (confirm('Are you sure you want to cancel this order?')) {
+                showNotification('Order cancelled successfully', 'success');
+                // Update order status
+                const order = mockOrders.find(o => o.id === orderId);
+                if (order) {
+                    order.status = 'cancelled';
+                    order.cancelReason = 'Cancelled by customer';
+                    renderOrders();
+                }
+            }
+        };
+
+        window.rateOrder = (orderId) => {
+            // This would open a rating modal in a real app
+            showNotification('Thank you for your feedback!', 'success');
+            const order = mockOrders.find(o => o.id === orderId);
+            if (order) {
+                order.rating = 4.5; // Mock rating
+                renderOrders();
+            }
+        };
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            Animations.slideIn(notification, 'right');
+            
+            setTimeout(() => {
+                Animations.modalOut(notification, () => {
+                    document.body.removeChild(notification);
+                });
+            }, 3000);
+        }
+    </script>
+
+    <style>
+        .filter-tab {
+            @apply flex-1 px-4 py-2 text-sm font-medium text-gray-600 rounded-lg transition-colors text-center;
+        }
+        .filter-tab.active {
+            @apply bg-white text-primary-500 shadow-sm;
+        }
+        .status-badge {
+            @apply px-3 py-1 text-xs font-medium rounded-full;
+        }
+        .status-delivered {
+            @apply bg-green-100 text-green-800;
+        }
+        .status-preparing {
+            @apply bg-yellow-100 text-yellow-800;
+        }
+        .status-on-the-way {
+            @apply bg-blue-100 text-blue-800;
+        }
+        .status-cancelled {
+            @apply bg-red-100 text-red-800;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order - FoodNow</title>
+    <link href="./src/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <button onclick="history.back()" class="mr-4 p-2 rounded-lg hover:bg-gray-100">
+                        <span class="text-xl">←</span>
+                    </button>
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-2">🍽️</span>
+                        <span class="text-xl font-bold text-secondary-500">FoodNow</span>
+                    </div>
+                </div>
+                <h1 class="text-xl font-bold text-gray-800">Track Order</h1>
+                <a href="home.html" class="text-primary-500 hover:text-primary-600 font-medium">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="lg:flex lg:gap-8">
+            <!-- Order Tracking -->
+            <div class="lg:flex-1">
+                <!-- Order Info -->
+                <div class="card p-6 mb-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800">Order #12345</h2>
+                            <p class="text-gray-600">Domino's Pizza • Koramangala</p>
+                        </div>
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                            On the way
+                        </span>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <p class="text-sm text-gray-600 mb-2">Estimated delivery</p>
+                        <p class="text-2xl font-bold text-primary-500">15-20 mins</p>
+                    </div>
+
+                    <!-- Delivery Address -->
+                    <div class="border-t pt-4">
+                        <p class="font-semibold mb-2">Delivering to:</p>
+                        <p class="text-gray-600">123 Main Street, Bangalore, Karnataka 560001</p>
+                    </div>
+                </div>
+
+                <!-- Tracking Timeline -->
+                <div class="card p-6 mb-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-6">Order Status</h3>
+                    
+                    <div class="space-y-6">
+                        <!-- Order Confirmed -->
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                                <span class="text-white text-sm">✓</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-800">Order Confirmed</h4>
+                                <p class="text-sm text-gray-600">Your order has been confirmed</p>
+                                <p class="text-xs text-gray-500 mt-1">2:15 PM</p>
+                            </div>
+                        </div>
+
+                        <!-- Preparing -->
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                                <span class="text-white text-sm">✓</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-800">Preparing Your Order</h4>
+                                <p class="text-sm text-gray-600">Restaurant is preparing your food</p>
+                                <p class="text-xs text-gray-500 mt-1">2:20 PM</p>
+                            </div>
+                        </div>
+
+                        <!-- On the Way -->
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center mr-4 animate-pulse">
+                                <span class="text-white text-sm">🚗</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-800">On the Way</h4>
+                                <p class="text-sm text-gray-600">Your order is on the way</p>
+                                <p class="text-xs text-gray-500 mt-1">2:35 PM</p>
+                            </div>
+                        </div>
+
+                        <!-- Delivered -->
+                        <div class="flex items-start opacity-50">
+                            <div class="flex-shrink-0 w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center mr-4">
+                                <span class="text-white text-sm">🏠</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-800">Delivered</h4>
+                                <p class="text-sm text-gray-600">Your order has been delivered</p>
+                                <p class="text-xs text-gray-500 mt-1">Expected: 2:50 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivery Person Info -->
+                <div class="card p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Delivery Partner</h3>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <img 
+                                src="https://ui-avatars.com/api/?name=Rahul+Kumar&background=FF6B00&color=fff" 
+                                alt="Delivery partner"
+                                class="w-12 h-12 rounded-full mr-4"
+                            >
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Rahul Kumar</h4>
+                                <div class="flex items-center">
+                                    <span class="text-green-600">★</span>
+                                    <span class="text-sm text-gray-600 ml-1">4.8 rating</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors">
+                            📞 Call
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="lg:w-80 mt-6 lg:mt-0">
+                <div class="card p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Order Summary</h3>
+                    
+                    <div class="space-y-3 mb-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="font-medium">Margherita Pizza</p>
+                                <p class="text-sm text-gray-600">Medium</p>
+                            </div>
+                            <span>₹199</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="font-medium">Garlic Bread</p>
+                                <p class="text-sm text-gray-600">4 pieces</p>
+                            </div>
+                            <span>₹99</span>
+                        </div>
+                    </div>
+                    
+                    <hr class="border-gray-200 mb-4">
+                    
+                    <div class="space-y-2 text-sm mb-4">
+                        <div class="flex justify-between">
+                            <span>Item total</span>
+                            <span>₹298</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Delivery fee</span>
+                            <span>₹40</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Taxes & fees</span>
+                            <span>₹15</span>
+                        </div>
+                    </div>
+                    
+                    <hr class="border-gray-200 mb-4">
+                    
+                    <div class="flex justify-between font-bold text-lg">
+                        <span>Total Paid</span>
+                        <span class="text-primary-500">₹353</span>
+                    </div>
+                    
+                    <div class="mt-6 space-y-3">
+                        <button class="w-full py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            Need Help?
+                        </button>
+                        <button class="w-full py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                            Download Invoice
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Auth } from './src/auth.js';
+        import { Animations } from './src/animations.js';
+
+        // Check if user is logged in
+        const user = Auth.getUser();
+        if (!user) {
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate elements
+            Animations.staggerCards('.card', 200);
+            
+            // Simulate real-time tracking updates
+            simulateRealTimeUpdates();
+        });
+
+        function simulateRealTimeUpdates() {
+            // This would normally connect to a real-time service
+            // For demo purposes, we'll just update the estimated time
+            setInterval(() => {
+                const timeElement = document.querySelector('.text-2xl.font-bold.text-primary-500');
+                if (timeElement) {
+                    const currentTime = timeElement.textContent;
+                    if (currentTime.includes('15-20')) {
+                        timeElement.textContent = '10-15 mins';
+                    } else if (currentTime.includes('10-15')) {
+                        timeElement.textContent = '5-10 mins';
+                    }
+                }
+            }, 30000); // Update every 30 seconds
+        }
+    </script>
+</body>
+</html>

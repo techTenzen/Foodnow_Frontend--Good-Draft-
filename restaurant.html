@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant - FoodNow</title>
+    <link href="./src/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <button onclick="history.back()" class="mr-4 p-2 rounded-lg hover:bg-gray-100">
+                        <span class="text-xl">←</span>
+                    </button>
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-2">🍽️</span>
+                        <span class="text-xl font-bold text-secondary-500">FoodNow</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="cart.html" class="relative inline-flex items-center p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <span class="text-2xl">🛒</span>
+                        <span class="cart-count absolute -top-1 -right-1 bg-primary-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </a>
+                    <a href="home.html" class="text-primary-500 hover:text-primary-600 font-medium">Home</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Restaurant Header -->
+    <section id="restaurantHeader" class="relative">
+        <!-- This will be populated by JavaScript -->
+    </section>
+
+    <!-- Menu Section -->
+    <section class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:flex lg:gap-8">
+                <!-- Menu Items -->
+                <div class="lg:flex-1">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Menu</h2>
+                        <div class="flex space-x-2 overflow-x-auto pb-2">
+                            <button class="menu-filter-btn active" data-category="all">All Items</button>
+                            <button class="menu-filter-btn" data-category="Pizza">Pizza</button>
+                            <button class="menu-filter-btn" data-category="Sides">Sides</button>
+                            <button class="menu-filter-btn" data-category="Burgers">Burgers</button>
+                            <button class="menu-filter-btn" data-category="Biryani">Biryani</button>
+                            <button class="menu-filter-btn" data-category="South Indian">South Indian</button>
+                        </div>
+                    </div>
+                    <div id="menuContainer" class="space-y-4">
+                        <!-- Menu items will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Sticky Cart Summary (Desktop) -->
+                <div class="hidden lg:block lg:w-80">
+                    <div id="cartSummary" class="sticky top-24 card p-6">
+                        <h3 class="font-bold text-lg mb-4">Your Order</h3>
+                        <div id="cartItems" class="space-y-3 mb-4">
+                            <p class="text-gray-500 text-center py-4">No items added yet</p>
+                        </div>
+                        <div id="cartTotal" class="border-t pt-4">
+                            <div class="flex justify-between items-center font-bold">
+                                <span>Total:</span>
+                                <span class="text-primary-500">₹0</span>
+                            </div>
+                        </div>
+                        <button id="checkoutBtn" class="btn-primary w-full mt-4 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            Proceed to Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile Cart Button -->
+    <div id="mobileCartBtn" class="lg:hidden fixed bottom-4 left-4 right-4 z-50 hidden">
+        <button class="btn-primary w-full py-4 text-lg font-semibold shadow-xl">
+            <div class="flex justify-between items-center">
+                <span id="mobileCartCount">0 items</span>
+                <span>View Cart • ₹<span id="mobileCartTotal">0</span></span>
+            </div>
+        </button>
+    </div>
+
+    <script type="module">
+        import { Auth } from './src/auth.js';
+        import { restaurants, Cart } from './src/data.js';
+        import { Animations } from './src/animations.js';
+
+        let currentRestaurant = null;
+
+        // Check if user is logged in
+        const user = Auth.getUser();
+        if (!user) {
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadRestaurant();
+            setupEventListeners();
+            updateCartDisplay();
+            Cart.updateCartCount();
+        });
+
+        function loadRestaurant() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const restaurantId = parseInt(urlParams.get('id'));
+            currentRestaurant = restaurants.find(r => r.id === restaurantId);
+            
+            if (!currentRestaurant) {
+                window.location.href = 'home.html';
+                return;
+            }
+
+            renderRestaurantHeader();
+            renderMenu();
+        }
+
+        function renderRestaurantHeader() {
+            document.getElementById('restaurantHeader').innerHTML = `
+                <div class="relative h-64 md:h-80">
+                    <img 
+                        src="${currentRestaurant.image}" 
+                        alt="${currentRestaurant.name}"
+                        class="w-full h-full object-cover"
+                    >
+                    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+                        <div class="max-w-7xl mx-auto">
+                            <h1 class="text-3xl md:text-4xl font-bold mb-2">${currentRestaurant.name}</h1>
+                            <p class="text-xl mb-2">${currentRestaurant.cuisine}</p>
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <span class="text-green-400">★</span>
+                                    <span class="ml-1">${currentRestaurant.rating}</span>
+                                </div>
+                                <span>•</span>
+                                <span>${currentRestaurant.deliveryTime}</span>
+                                <span>•</span>
+                                <span>₹${currentRestaurant.priceForTwo} for two</span>
+                            </div>
+                            ${currentRestaurant.offers.length > 0 ? `
+                                <div class="mt-3 flex flex-wrap gap-2">
+                                    ${currentRestaurant.offers.map(offer => `
+                                        <span class="text-xs bg-primary-500 text-white px-2 py-1 rounded">${offer}</span>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMenu(filter = 'all') {
+            const filteredMenu = filter === 'all' ? 
+                currentRestaurant.menu : 
+                currentRestaurant.menu.filter(item => item.category === filter);
+
+            document.getElementById('menuContainer').innerHTML = filteredMenu.map(item => `
+                <div class="menu-item card p-6 flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">${item.name}</h3>
+                        <p class="text-gray-600 mb-3">${item.description}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xl font-bold text-primary-500">₹${item.price}</span>
+                            <div class="flex items-center space-x-3">
+                                <button class="quantity-btn minus-btn" data-id="${item.id}">-</button>
+                                <span class="quantity-display" data-id="${item.id}">0</span>
+                                <button class="quantity-btn plus-btn" data-id="${item.id}">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:w-32">
+                        <img 
+                            src="${item.image}" 
+                            alt="${item.name}"
+                            class="w-full h-24 md:h-32 object-cover rounded-lg"
+                        >
+                    </div>
+                </div>
+            `).join('');
+
+            // Update quantities from cart
+            updateMenuQuantities();
+            
+            // Animate menu items
+            Animations.staggerCards('.menu-item', 100);
+        }
+
+        function updateMenuQuantities() {
+            const cartItems = Cart.getItems();
+            cartItems.forEach(cartItem => {
+                const quantityDisplay = document.querySelector(`[data-id="${cartItem.id}"]`);
+                if (quantityDisplay) {
+                    quantityDisplay.textContent = cartItem.quantity;
+                }
+            });
+        }
+
+        function updateCartDisplay() {
+            const cartItems = Cart.getItems();
+            const total = Cart.getTotal();
+            const itemCount = Cart.getItemCount();
+
+            // Update desktop cart summary
+            const cartItemsContainer = document.getElementById('cartItems');
+            const cartTotalContainer = document.getElementById('cartTotal');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+            if (cartItems.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-gray-500 text-center py-4">No items added yet</p>';
+                checkoutBtn.disabled = true;
+            } else {
+                cartItemsContainer.innerHTML = cartItems.map(item => `
+                    <div class="flex justify-between items-center">
+                        <div class="flex-1">
+                            <p class="font-medium">${item.name}</p>
+                            <p class="text-sm text-gray-600">₹${item.price} × ${item.quantity}</p>
+                        </div>
+                        <span class="font-medium">₹${item.price * item.quantity}</span>
+                    </div>
+                `).join('');
+                checkoutBtn.disabled = false;
+            }
+
+            cartTotalContainer.innerHTML = `
+                <div class="border-t pt-4">
+                    <div class="flex justify-between items-center font-bold">
+                        <span>Total:</span>
+                        <span class="text-primary-500">₹${total}</span>
+                    </div>
+                </div>
+            `;
+
+            // Update mobile cart button
+            const mobileCartBtn = document.getElementById('mobileCartBtn');
+            const mobileCartCount = document.getElementById('mobileCartCount');
+            const mobileCartTotal = document.getElementById('mobileCartTotal');
+
+            if (itemCount > 0) {
+                mobileCartBtn.classList.remove('hidden');
+                mobileCartCount.textContent = `${itemCount} item${itemCount > 1 ? 's' : ''}`;
+                mobileCartTotal.textContent = total;
+            } else {
+                mobileCartBtn.classList.add('hidden');
+            }
+        }
+
+        function setupEventListeners() {
+            // Menu filter buttons
+            document.querySelectorAll('.menu-filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.menu-filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderMenu(btn.dataset.category);
+                });
+            });
+
+            // Quantity buttons
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('plus-btn')) {
+                    const itemId = parseInt(e.target.dataset.id);
+                    const item = currentRestaurant.menu.find(i => i.id === itemId);
+                    if (item) {
+                        Cart.addItem(item, 1);
+                        updateMenuQuantities();
+                        updateCartDisplay();
+                    }
+                } else if (e.target.classList.contains('minus-btn')) {
+                    const itemId = parseInt(e.target.dataset.id);
+                    const cartItems = Cart.getItems();
+                    const cartItem = cartItems.find(i => i.id === itemId);
+                    if (cartItem) {
+                        Cart.updateQuantity(itemId, cartItem.quantity - 1);
+                        updateMenuQuantities();
+                        updateCartDisplay();
+                    }
+                }
+            });
+
+            // Checkout button
+            document.getElementById('checkoutBtn').addEventListener('click', () => {
+                window.location.href = 'cart.html';
+            });
+
+            // Mobile cart button
+            document.getElementById('mobileCartBtn').addEventListener('click', () => {
+                window.location.href = 'cart.html';
+            });
+
+            // Add button animations
+            document.addEventListener('mouseenter', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    Animations.pulseButton(e.target);
+                }
+            }, true);
+        }
+    </script>
+
+    <style>
+        .menu-filter-btn {
+            @apply px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors whitespace-nowrap;
+        }
+        .menu-filter-btn.active {
+            @apply bg-primary-500 text-white border-primary-500;
+        }
+        .quantity-btn {
+            @apply w-8 h-8 rounded-full border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white transition-colors flex items-center justify-center font-bold;
+        }
+        .quantity-display {
+            @apply font-bold text-lg min-w-[2rem] text-center;
+        }
+    </style>
+</body>
+</html>

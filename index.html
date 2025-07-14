@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodNow - Order Food Online</title>
+    <link href="./src/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full">
+            <!-- Logo -->
+            <div class="text-center mb-8 fade-in">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-primary-500 rounded-2xl mb-4 shadow-lg">
+                    <span class="text-3xl">🍽️</span>
+                </div>
+                <h1 class="text-4xl font-bold text-secondary-500 mb-2">FoodNow</h1>
+                <p class="text-gray-600">Delicious food, delivered fast</p>
+            </div>
+
+            <!-- Login Form -->
+            <div class="card p-8 mb-6">
+                <h2 class="text-2xl font-bold text-secondary-500 mb-6 text-center">Welcome Back</h2>
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            class="input-field" 
+                            placeholder="your@email.com"
+                            required
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            class="input-field" 
+                            placeholder="••••••••"
+                            required
+                        >
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="rounded border-gray-300 text-primary-500">
+                            <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                        </label>
+                        <a href="#" class="text-sm text-primary-500 hover:text-primary-600">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn-primary w-full">
+                        Sign In
+                    </button>
+                </form>
+            </div>
+
+            <!-- Role Selection -->
+            <div class="grid grid-cols-1 gap-4 mb-6">
+                <button class="role-btn p-4 bg-white rounded-xl shadow-lg border-2 border-transparent hover:border-primary-500 transition-all duration-200" data-role="customer">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mr-4">
+                            <span class="text-xl">👤</span>
+                        </div>
+                        <div class="text-left">
+                            <h3 class="font-semibold text-gray-800">I'm a Customer</h3>
+                            <p class="text-sm text-gray-600">Order delicious food</p>
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Other Role Links -->
+            <div class="text-center space-y-2">
+                <p class="text-gray-600">Other login options:</p>
+                <div class="flex justify-center space-x-4">
+                    <a href="restaurant-login.html" class="text-primary-500 hover:text-primary-600 font-medium">Restaurant</a>
+                    <span class="text-gray-400">•</span>
+                    <a href="admin-login.html" class="text-primary-500 hover:text-primary-600 font-medium">Admin</a>
+                </div>
+            </div>
+
+            <!-- Sign Up Link -->
+            <div class="text-center mt-6">
+                <p class="text-gray-600">
+                    Don't have an account? 
+                    <a href="signup.html" class="text-primary-500 hover:text-primary-600 font-medium">Sign up</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Auth } from './src/auth.js';
+        import { Animations } from './src/animations.js';
+
+        // Animate page elements
+        document.addEventListener('DOMContentLoaded', () => {
+            Animations.fadeIn('.fade-in');
+            Animations.staggerCards('.card, .role-btn', 100);
+        });
+
+        // Handle login form
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email && password) {
+                Auth.login(email, password, 'customer');
+                window.location.href = 'home.html';
+            }
+        });
+
+        // Handle role selection
+        document.querySelectorAll('.role-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const role = btn.dataset.role;
+                if (role === 'customer') {
+                    window.location.href = 'home.html';
+                }
+            });
+        });
+
+        // Add button animations
+        document.querySelectorAll('button, .role-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                Animations.pulseButton(btn);
+            });
+        });
+    </script>
+</body>
+</html>

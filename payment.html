@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - FoodNow</title>
+    <link href="./src/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <button onclick="history.back()" class="mr-4 p-2 rounded-lg hover:bg-gray-100">
+                        <span class="text-xl">←</span>
+                    </button>
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-2">🍽️</span>
+                        <span class="text-xl font-bold text-secondary-500">FoodNow</span>
+                    </div>
+                </div>
+                <h1 class="text-xl font-bold text-gray-800">Payment</h1>
+                <div></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="lg:flex lg:gap-8">
+            <!-- Payment Methods -->
+            <div class="lg:flex-1">
+                <div class="card p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Choose Payment Method</h2>
+                    
+                    <div class="space-y-4">
+                        <!-- Credit/Debit Card -->
+                        <div class="payment-method" data-method="card">
+                            <div class="payment-header p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <input type="radio" name="paymentMethod" value="card" class="text-primary-500 mr-3">
+                                        <span class="font-semibold">💳 Credit/Debit Card</span>
+                                    </div>
+                                    <span class="text-sm text-gray-500">Secure payment</span>
+                                </div>
+                            </div>
+                            <div class="payment-details hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Card Number</label>
+                                        <input type="text" placeholder="1234 5678 9012 3456" class="input-field" maxlength="19">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
+                                        <input type="text" placeholder="MM/YY" class="input-field" maxlength="5">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">CVV</label>
+                                        <input type="text" placeholder="123" class="input-field" maxlength="3">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Cardholder Name</label>
+                                        <input type="text" placeholder="John Doe" class="input-field">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- UPI -->
+                        <div class="payment-method" data-method="upi">
+                            <div class="payment-header p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <input type="radio" name="paymentMethod" value="upi" class="text-primary-500 mr-3">
+                                        <span class="font-semibold">📱 UPI Payment</span>
+                                    </div>
+                                    <span class="text-sm text-gray-500">Instant transfer</span>
+                                </div>
+                            </div>
+                            <div class="payment-details hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                                <div class="text-center">
+                                    <div class="w-48 h-48 bg-white rounded-lg shadow-lg mx-auto mb-4 flex items-center justify-center">
+                                        <div class="text-center">
+                                            <div class="w-32 h-32 bg-gray-200 rounded-lg mb-2 flex items-center justify-center">
+                                                <span class="text-4xl">📱</span>
+                                            </div>
+                                            <p class="text-sm text-gray-600">QR Code</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-600 mb-4">Scan with any UPI app</p>
+                                    <div class="max-w-xs mx-auto">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Or enter UPI ID</label>
+                                        <input type="text" placeholder="your-upi@paytm" class="input-field">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cash on Delivery -->
+                        <div class="payment-method" data-method="cod">
+                            <div class="payment-header p-4 border border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <input type="radio" name="paymentMethod" value="cod" class="text-primary-500 mr-3">
+                                        <span class="font-semibold">💵 Cash on Delivery</span>
+                                    </div>
+                                    <span class="text-sm text-gray-500">Pay when delivered</span>
+                                </div>
+                            </div>
+                            <div class="payment-details hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                                <div class="text-center">
+                                    <div class="text-6xl mb-4">💵</div>
+                                    <h3 class="font-semibold text-lg mb-2">Cash on Delivery</h3>
+                                    <p class="text-gray-600">Pay cash when your order is delivered</p>
+                                    <div class="mt-4 p-3 bg-yellow-100 rounded-lg">
+                                        <p class="text-sm text-yellow-800">
+                                            <strong>Note:</strong> Please keep exact change ready
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="lg:w-80">
+                <div class="card p-6 sticky top-24">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Order Summary</h2>
+                    <div id="orderSummary"></div>
+                    <button id="placeOrderBtn" class="btn-primary w-full mt-6" disabled>
+                        Place Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Auth } from './src/auth.js';
+        import { Cart } from './src/data.js';
+        import { Animations } from './src/animations.js';
+
+        // Check if user is logged in
+        const user = Auth.getUser();
+        if (!user) {
+            window.location.href = 'index.html';
+        }
+
+        let selectedPaymentMethod = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if cart is empty
+            const cartItems = Cart.getItems();
+            if (cartItems.length === 0) {
+                window.location.href = 'home.html';
+                return;
+            }
+
+            renderOrderSummary();
+            setupEventListeners();
+            
+            // Set initial payment method if coming from cart
+            const savedPayment = localStorage.getItem('selectedPayment');
+            if (savedPayment) {
+                const radio = document.querySelector(`input[value="${savedPayment}"]`);
+                if (radio) {
+                    radio.checked = true;
+                    selectedPaymentMethod = savedPayment;
+                    showPaymentDetails(savedPayment);
+                    updatePlaceOrderButton();
+                }
+            }
+
+            // Animate elements
+            Animations.staggerCards('.payment-method', 100);
+        });
+
+        function renderOrderSummary() {
+            const cartItems = Cart.getItems();
+            const total = Cart.getTotal();
+            const deliveryFee = 40;
+            const tax = Math.round(total * 0.05);
+            const grandTotal = total + deliveryFee + tax;
+
+            document.getElementById('orderSummary').innerHTML = `
+                <div class="space-y-3 mb-4">
+                    ${cartItems.map(item => `
+                        <div class="flex justify-between items-center text-sm">
+                            <span>${item.name} × ${item.quantity}</span>
+                            <span>₹${item.price * item.quantity}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <hr class="border-gray-200 mb-4">
+                
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span>Item total</span>
+                        <span>₹${total}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Delivery fee</span>
+                        <span>₹${deliveryFee}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Taxes & fees</span>
+                        <span>₹${tax}</span>
+                    </div>
+                </div>
+                
+                <hr class="border-gray-200 my-4">
+                
+                <div class="flex justify-between font-bold text-lg">
+                    <span>Total</span>
+                    <span class="text-primary-500">₹${grandTotal}</span>
+                </div>
+            `;
+        }
+
+        function setupEventListeners() {
+            // Payment method selection
+            document.querySelectorAll('.payment-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const method = header.parentElement.dataset.method;
+                    const radio = header.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    selectedPaymentMethod = method;
+                    showPaymentDetails(method);
+                    updatePlaceOrderButton();
+                });
+            });
+
+            // Radio button changes
+            document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    selectedPaymentMethod = radio.value;
+                    showPaymentDetails(radio.value);
+                    updatePlaceOrderButton();
+                });
+            });
+
+            // Place order button
+            document.getElementById('placeOrderBtn').addEventListener('click', () => {
+                if (selectedPaymentMethod) {
+                    // Create order data
+                    const orderData = {
+                        id: Date.now(),
+                        items: Cart.getItems(),
+                        total: Cart.getTotal() + 40 + Math.round(Cart.getTotal() * 0.05),
+                        paymentMethod: selectedPaymentMethod,
+                        status: 'confirmed',
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    // Save order to localStorage
+                    const orders = JSON.parse(localStorage.getItem('user_orders') || '[]');
+                    orders.push(orderData);
+                    localStorage.setItem('user_orders', JSON.stringify(orders));
+                    
+                    // Clear cart
+                    Cart.clear();
+                    
+                    // Redirect to order summary
+                    localStorage.setItem('current_order', JSON.stringify(orderData));
+                    window.location.href = 'order-summary.html';
+                }
+            });
+
+            // Format card number input
+            document.addEventListener('input', (e) => {
+                if (e.target.placeholder === '1234 5678 9012 3456') {
+                    let value = e.target.value.replace(/\D/g, '');
+                    value = value.substring(0, 16);
+                    value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+                    e.target.value = value;
+                }
+            });
+
+            // Format expiry date input
+            document.addEventListener('input', (e) => {
+                if (e.target.placeholder === 'MM/YY') {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length >= 2) {
+                        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                    }
+                    e.target.value = value;
+                }
+            });
+        }
+
+        function showPaymentDetails(method) {
+            // Hide all payment details
+            document.querySelectorAll('.payment-details').forEach(detail => {
+                detail.classList.add('hidden');
+            });
+            
+            // Show selected payment details
+            const selectedMethod = document.querySelector(`[data-method="${method}"] .payment-details`);
+            if (selectedMethod) {
+                selectedMethod.classList.remove('hidden');
+                Animations.slideIn(selectedMethod, 'up');
+            }
+            
+            // Update border colors
+            document.querySelectorAll('.payment-header').forEach(header => {
+                header.classList.remove('border-primary-500');
+                header.classList.add('border-gray-200');
+            });
+            
+            const selectedHeader = document.querySelector(`[data-method="${method}"] .payment-header`);
+            if (selectedHeader) {
+                selectedHeader.classList.remove('border-gray-200');
+                selectedHeader.classList.add('border-primary-500');
+            }
+        }
+
+        function updatePlaceOrderButton() {
+            const placeOrderBtn = document.getElementById('placeOrderBtn');
+            if (selectedPaymentMethod) {
+                placeOrderBtn.disabled = false;
+                placeOrderBtn.textContent = `Place Order - ₹${Cart.getTotal() + 40 + Math.round(Cart.getTotal() * 0.05)}`;
+            } else {
+                placeOrderBtn.disabled = true;
+                placeOrderBtn.textContent = 'Select Payment Method';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - FoodNow</title>
+    <link href="./src/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full">
+            <!-- Success Animation -->
+            <div class="text-center mb-8">
+                <div class="success-checkmark mx-auto mb-6">
+                    <div class="check-icon">
+                        <span class="icon-line line-tip"></span>
+                        <span class="icon-line line-long"></span>
+                        <div class="icon-circle"></div>
+                        <div class="icon-fix"></div>
+                    </div>
+                </div>
+                <h1 class="text-3xl font-bold text-green-600 mb-2">Order Confirmed!</h1>
+                <p class="text-gray-600">Your food is being prepared</p>
+            </div>
+
+            <!-- Order Details -->
+            <div class="card p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Order Details</h2>
+                <div id="orderDetails">
+                    <!-- Order details will be populated here -->
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-3">
+                <a href="track.html" class="btn-primary w-full block text-center">
+                    Track Your Order
+                </a>
+                <a href="home.html" class="btn-secondary w-full block text-center">
+                    Order More Food
+                </a>
+                <a href="orders.html" class="block text-center text-primary-500 hover:text-primary-600 font-medium">
+                    View All Orders
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Auth } from './src/auth.js';
+        import { Animations } from './src/animations.js';
+
+        // Check if user is logged in
+        const user = Auth.getUser();
+        if (!user) {
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const orderData = JSON.parse(localStorage.getItem('current_order'));
+            
+            if (!orderData) {
+                window.location.href = 'home.html';
+                return;
+            }
+
+            renderOrderDetails(orderData);
+            animateSuccess();
+        });
+
+        function renderOrderDetails(order) {
+            const paymentMethodText = {
+                'card': '💳 Credit/Debit Card',
+                'upi': '📱 UPI Payment',
+                'cod': '💵 Cash on Delivery'
+            };
+
+            document.getElementById('orderDetails').innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium">Order ID:</span>
+                        <span class="text-primary-500 font-mono">#${order.id}</span>
+                    </div>
+                    
+                    <div class="border-t pt-4">
+                        <h3 class="font-semibold mb-3">Items Ordered:</h3>
+                        <div class="space-y-2">
+                            ${order.items.map(item => `
+                                <div class="flex justify-between text-sm">
+                                    <span>${item.name} × ${item.quantity}</span>
+                                    <span>₹${item.price * item.quantity}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-4">
+                        <div class="flex justify-between font-bold">
+                            <span>Total Paid:</span>
+                            <span class="text-primary-500">₹${order.total}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-4">
+                        <div class="flex justify-between">
+                            <span class="font-medium">Payment Method:</span>
+                            <span>${paymentMethodText[order.paymentMethod]}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-4">
+                        <div class="flex justify-between">
+                            <span class="font-medium">Delivery Address:</span>
+                            <span class="text-right text-sm">123 Main Street<br>Bangalore, Karnataka</span>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-4">
+                        <div class="flex justify-between">
+                            <span class="font-medium">Estimated Delivery:</span>
+                            <span class="text-green-600 font-medium">25-30 mins</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function animateSuccess() {
+            // Animate the success checkmark
+            setTimeout(() => {
+                document.querySelector('.success-checkmark').classList.add('animate');
+            }, 500);
+            
+            // Animate the card
+            Animations.bounceIn('.card', 800);
+        }
+    </script>
+
+    <style>
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            border-radius: 50%;
+            box-sizing: content-box;
+            margin: 0 auto;
+        }
+
+        .success-checkmark.animate .icon-circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #7ac142;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        .success-checkmark .icon-circle {
+            width: 80px;
+            height: 80px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 50%;
+        }
+
+        .success-checkmark .icon-line {
+            height: 5px;
+            background-color: #7ac142;
+            display: block;
+            border-radius: 2px;
+            position: absolute;
+            z-index: 10;
+        }
+
+        .success-checkmark .icon-line.line-tip {
+            top: 46px;
+            left: 14px;
+            width: 25px;
+            transform: rotate(45deg);
+            animation: icon-line-tip 0.75s;
+        }
+
+        .success-checkmark .icon-line.line-long {
+            top: 38px;
+            right: 8px;
+            width: 47px;
+            transform: rotate(-45deg);
+            animation: icon-line-long 0.75s;
+        }
+
+        .success-checkmark.animate .icon-line.line-tip {
+            animation: icon-line-tip 0.75s;
+        }
+
+        .success-checkmark.animate .icon-line.line-long {
+            animation: icon-line-long 0.75s;
+        }
+
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes icon-line-tip {
+            0% {
+                width: 0;
+                left: 1px;
+                top: 19px;
+            }
+            54% {
+                width: 0;
+                left: 1px;
+                top: 19px;
+            }
+            70% {
+                width: 50px;
+                left: -8px;
+                top: 37px;
+            }
+            84% {
+                width: 17px;
+                left: 21px;
+                top: 48px;
+            }
+            100% {
+                width: 25px;
+                left: 14px;
+                top: 45px;
+            }
+        }
+
+        @keyframes icon-line-long {
+            0% {
+                width: 0;
+                right: 46px;
+                top: 54px;
+            }
+            65% {
+                width: 0;
+                right: 46px;
+                top: 54px;
+            }
+            84% {
+                width: 55px;
+                right: 0px;
+                top: 35px;
+            }
+            100% {
+                width: 47px;
+                right: 8px;
+                top: 38px;
+            }
+        }
+    </style>
+</body>
+</html>

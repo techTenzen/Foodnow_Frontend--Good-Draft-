@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Login - FoodNow</title>
+    <link href="./src/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-md w-full">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-primary-500 rounded-2xl mb-4 shadow-lg">
+                    <span class="text-3xl">🏪</span>
+                </div>
+                <h1 class="text-4xl font-bold text-secondary-500 mb-2">Restaurant Portal</h1>
+                <p class="text-gray-600">Manage your restaurant on FoodNow</p>
+            </div>
+
+            <!-- Login Form -->
+            <div class="card p-8 mb-6">
+                <h2 class="text-2xl font-bold text-secondary-500 mb-6 text-center">Restaurant Login</h2>
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Restaurant Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            class="input-field" 
+                            placeholder="restaurant@example.com"
+                            required
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            class="input-field" 
+                            placeholder="••••••••"
+                            required
+                        >
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="rounded border-gray-300 text-primary-500">
+                            <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                        </label>
+                        <a href="#" class="text-sm text-primary-500 hover:text-primary-600">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn-primary w-full">
+                        Sign In to Dashboard
+                    </button>
+                </form>
+            </div>
+
+            <!-- Register Link -->
+            <div class="text-center mb-6">
+                <p class="text-gray-600">
+                    New restaurant? 
+                    <a href="restaurant-register.html" class="text-primary-500 hover:text-primary-600 font-medium">Register here</a>
+                </p>
+            </div>
+
+            <!-- Back to Customer -->
+            <div class="text-center">
+                <a href="index.html" class="text-gray-500 hover:text-gray-700">← Back to Customer Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Auth } from './src/auth.js';
+        import { Animations } from './src/animations.js';
+
+        // Animate page elements
+        document.addEventListener('DOMContentLoaded', () => {
+            Animations.fadeIn('.card');
+        });
+
+        // Handle login form
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email && password) {
+                Auth.login(email, password, 'restaurant');
+                window.location.href = 'restaurant-dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Feedback - FoodNow Admin</title>
+    <link href="./src/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="navbar bg-secondary-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="admin-dashboard.html" class="mr-4 p-2 rounded-lg hover:bg-secondary-600">
+                        <span class="text-xl text-white">←</span>
+                    </a>
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-2">⚙️</span>
+                        <span class="text-xl font-bold text-white">Customer Feedback</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="admin-dashboard.html" class="text-white hover:text-gray-200 font-medium">Dashboard</a>
+                    <a href="manage-users.html" class="text-white hover:text-gray-200 font-medium">Users</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="card p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 mr-4">
+                        <span class="text-2xl">⭐</span>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Avg Rating</p>
+                        <p class="text-2xl font-bold text-gray-800">4.3</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 mr-4">
+                        <span class="text-2xl">💬</span>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Total Reviews</p>
+                        <p class="text-2xl font-bold text-gray-800">1,247</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-100 mr-4">
+                        <span class="text-2xl">⚠️</span>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Complaints</p>
+                        <p class="text-2xl font-bold text-gray-800">23</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-red-100 mr-4">
+                        <span class="text-2xl">🚨</span>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Urgent Issues</p>
+                        <p class="text-2xl font-bold text-gray-800">7</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="mb-6">
+            <div class="flex space-x-1 bg-gray-100 p-1 rounded-lg max-w-md">
+                <button class="filter-tab active" data-filter="all">All Feedback</button>
+                <button class="filter-tab" data-filter="complaints">Complaints</button>
+                <button class="filter-tab" data-filter="reviews">Reviews</button>
+            </div>
+        </div>
+
+        <!-- Feedback List -->
+        <div id="feedbackList" class="space-y-4">
+            <!-- Feedback items will be populated here -->
+        </div>
+    </div>
+
+    <!-- Feedback Details Modal -->
+    <div id="feedbackModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Feedback Details</h3>
+                <button id="closeModal" class="text-gray-500 hover:text-gray-700">✕</button>
+            </div>
+            <div id="modalContent">
+                <!-- Feedback details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Auth } from './src/auth.js';
+        import { Animations } from './src/animations.js';
+
+        // Check if user is logged in and is an admin
+        const user = Auth.getUser();
+        if (!user || user.role !== 'admin') {
+            window.location.href = 'admin-login.html';
+        }
+
+        // Mock feedback data
+        const mockFeedback = [
+            {
+                id: 1,
+                type: "complaint",
+                title: "Order never delivered",
+                message: "I placed an order 2 hours ago and it still hasn't arrived. The restaurant says they delivered it but I never received anything.",
+                customerName: "John Doe",
+                customerEmail: "john@example.com",
+                restaurantName: "Pizza Palace",
+                orderId: "#12345",
+                rating: 1,
+                date: "2024-01-17T14:30:00Z",
+                status: "pending",
+                priority: "high"
+            },
+            {
+                id: 2,
+                type: "review",
+                title: "Amazing food quality!",
+                message: "The biryani was absolutely delicious and arrived hot. Great packaging too. Will definitely order again!",
+                customerName: "Sarah Wilson",
+                customerEmail: "sarah@example.com",
+                restaurantName: "Meghana Foods",
+                orderId: "#12346",
+                rating: 5,
+                date: "2024-01-17T12:15:00Z",
+                status: "resolved",
+                priority: "low"
+            },
+            {
+                id: 3,
+                type: "complaint",
+                title: "Wrong order delivered",
+                message: "I ordered a vegetarian pizza but received a non-vegetarian one. This is unacceptable as I'm a vegetarian.",
+                customerName: "Priya Sharma",
+                customerEmail: "priya@example.com",
+                restaurantName: "Domino's Pizza",
+                orderId: "#12347",
+                rating: 2,
+                date: "2024-01-17T10:45:00Z",
+                status: "in-progress",
+                priority: "medium"
+            },
+            {
+                id: 4,
+                type: "review",
+                title: "Fast delivery",
+                message: "Order arrived 10 minutes earlier than expected. Food was good quality and still warm.",
+                customerName: "Mike Johnson",
+                customerEmail: "mike@example.com",
+                restaurantName: "Burger King",
+                orderId: "#12348",
+                rating: 4,
+                date: "2024-01-16T19:20:00Z",
+                status: "resolved",
+                priority: "low"
+            },
+            {
+                id: 5,
+                type: "complaint",
+                title: "Food poisoning",
+                message: "I got severe food poisoning after eating from this restaurant. This is a serious health concern that needs immediate attention.",
+                customerName: "Lisa Chen",
+                customerEmail: "lisa@example.com",
+                restaurantName: "Street Food Corner",
+                orderId: "#12349",
+                rating: 1,
+                date: "2024-01-16T16:30:00Z",
+                status: "pending",
+                priority: "urgent"
+            }
+        ];
+
+        let currentFilter = 'all';
+        let filteredFeedback = [...mockFeedback];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFeedback();
+            setupEventListeners();
+            Animations.fadeIn('#feedbackList');
+        });
+
+        function renderFeedback() {
+            const container = document.getElementById('feedbackList');
+            
+            if (filteredFeedback.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16">
+                        <div class="text-6xl mb-4">💬</div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">No feedback found</h2>
+                        <p class="text-gray-600">No feedback matches your current filter</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredFeedback.map(feedback => `
+                <div class="feedback-card card p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center mb-2">
+                                <span class="feedback-type-badge ${feedback.type}">${feedback.type}</span>
+                                <span class="priority-badge ${feedback.priority} ml-2">${feedback.priority}</span>
+                                ${feedback.type === 'review' ? `
+                                    <div class="flex items-center ml-3">
+                                        <div class="flex text-yellow-400 mr-1">
+                                            ${'★'.repeat(feedback.rating)}${'☆'.repeat(5 - feedback.rating)}
+                                        </div>
+                                        <span class="text-sm text-gray-600">${feedback.rating}/5</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">${feedback.title}</h3>
+                            <p class="text-gray-600 mb-3 line-clamp-2">${feedback.message}</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm text-gray-600">
+                                <div>
+                                    <span class="font-medium">Customer:</span> ${feedback.customerName}
+                                </div>
+                                <div>
+                                    <span class="font-medium">Restaurant:</span> ${feedback.restaurantName}
+                                </div>
+                                <div>
+                                    <span class="font-medium">Order:</span> ${feedback.orderId}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-right ml-4">
+                            <span class="status-badge ${feedback.status}">${feedback.status.replace('-', ' ')}</span>
+                            <p class="text-sm text-gray-500 mt-2">${new Date(feedback.date).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button 
+                            onclick="viewFeedback(${feedback.id})" 
+                            class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg text-sm transition-colors"
+                        >
+                            View Details
+                        </button>
+                        
+                        ${feedback.status === 'pending' ? `
+                            <button 
+                                onclick="markAsInProgress(${feedback.id})" 
+                                class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg text-sm transition-colors"
+                            >
+                                Start Review
+                            </button>
+                        ` : ''}
+                        
+                        ${feedback.status !== 'resolved' ? `
+                            <button 
+                                onclick="markAsResolved(${feedback.id})" 
+                                class="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg text-sm transition-colors"
+                            >
+                                Mark Resolved
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            // Animate feedback cards
+            Animations.staggerCards('.feedback-card', 100);
+        }
+
+        function setupEventListeners() {
+            // Filter tabs
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentFilter = tab.dataset.filter;
+                    filterFeedback();
+                });
+            });
+
+            // Modal close
+            document.getElementById('closeModal').addEventListener('click', closeModal);
+            document.getElementById('feedbackModal').addEventListener('click', (e) => {
+                if (e.target.id === 'feedbackModal') {
+                    closeModal();
+                }
+            });
+        }
+
+        function filterFeedback() {
+            if (currentFilter === 'all') {
+                filteredFeedback = [...mockFeedback];
+            } else {
+                filteredFeedback = mockFeedback.filter(feedback => feedback.type === currentFilter);
+            }
+            renderFeedback();
+        }
+
+        function viewFeedback(id) {
+            const feedback = mockFeedback.find(f => f.id === id);
+            if (!feedback) return;
+
+            document.getElementById('modalContent').innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <div class="flex items-center mb-2">
+                                <span class="feedback-type-badge ${feedback.type}">${feedback.type}</span>
+                                <span class="priority-badge ${feedback.priority} ml-2">${feedback.priority}</span>
+                                ${feedback.type === 'review' ? `
+                                    <div class="flex items-center ml-3">
+                                        <div class="flex text-yellow-400 mr-1">
+                                            ${'★'.repeat(feedback.rating)}${'☆'.repeat(5 - feedback.rating)}
+                                        </div>
+                                        <span class="text-sm text-gray-600">${feedback.rating}/5</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <h4 class="text-xl font-bold text-gray-800">${feedback.title}</h4>
+                        </div>
+                        <span class="status-badge ${feedback.status}">${feedback.status.replace('-', ' ')}</span>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="text-gray-800">${feedback.message}</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-600">Customer</p>
+                            <p class="font-medium">${feedback.customerName}</p>
+                            <p class="text-sm text-gray-500">${feedback.customerEmail}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Restaurant</p>
+                            <p class="font-medium">${feedback.restaurantName}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Order ID</p>
+                            <p class="font-medium">${feedback.orderId}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Date</p>
+                            <p class="font-medium">${new Date(feedback.date).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3 pt-4 border-t">
+                        ${feedback.status === 'pending' ? `
+                            <button 
+                                onclick="markAsInProgress(${feedback.id}); closeModal();" 
+                                class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg transition-colors"
+                            >
+                                Start Review
+                            </button>
+                        ` : ''}
+                        
+                        ${feedback.status !== 'resolved' ? `
+                            <button 
+                                onclick="markAsResolved(${feedback.id}); closeModal();" 
+                                class="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg transition-colors"
+                            >
+                                Mark Resolved
+                            </button>
+                        ` : ''}
+                        
+                        <button 
+                            onclick="contactCustomer(${feedback.id})" 
+                            class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors"
+                        >
+                            Contact Customer
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('feedbackModal').classList.remove('hidden');
+            Animations.modalIn('#feedbackModal > div');
+        }
+
+        function markAsInProgress(id) {
+            const feedback = mockFeedback.find(f => f.id === id);
+            if (feedback) {
+                feedback.status = 'in-progress';
+                showNotification('Feedback marked as in progress', 'success');
+                filterFeedback();
+            }
+        }
+
+        function markAsResolved(id) {
+            const feedback = mockFeedback.find(f => f.id === id);
+            if (feedback) {
+                feedback.status = 'resolved';
+                showNotification('Feedback marked as resolved', 'success');
+                filterFeedback();
+            }
+        }
+
+        function contactCustomer(id) {
+            const feedback = mockFeedback.find(f => f.id === id);
+            if (feedback) {
+                showNotification(`Email sent to ${feedback.customerName}`, 'success');
+            }
+        }
+
+        function closeModal() {
+            Animations.modalOut('#feedbackModal > div', () => {
+                document.getElementById('feedbackModal').classList.add('hidden');
+            });
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            Animations.slideIn(notification, 'right');
+            
+            setTimeout(() => {
+                Animations.modalOut(notification, () => {
+                    document.body.removeChild(notification);
+                });
+            }, 3000);
+        }
+
+        // Make functions globally available
+        window.viewFeedback = viewFeedback;
+        window.markAsInProgress = markAsInProgress;
+        window.markAsResolved = markAsResolved;
+        window.contactCustomer = contactCustomer;
+        window.closeModal = closeModal;
+    </script>
+
+    <style>
+        .filter-tab {
+            @apply flex-1 px-4 py-2 text-sm font-medium text-gray-600 rounded-lg transition-colors text-center;
+        }
+        .filter-tab.active {
+            @apply bg-white text-secondary-500 shadow-sm;
+        }
+        
+        .feedback-type-badge {
+            @apply px-2 py-1 text-xs font-medium rounded-full;
+        }
+        .feedback-type-badge.complaint {
+            @apply bg-red-100 text-red-800;
+        }
+        .feedback-type-badge.review {
+            @apply bg-blue-100 text-blue-800;
+        }
+        
+        .priority-badge {
+            @apply px-2 py-1 text-xs font-medium rounded-full;
+        }
+        .priority-badge.low {
+            @apply bg-gray-100 text-gray-800;
+        }
+        .priority-badge.medium {
+            @apply bg-yellow-100 text-yellow-800;
+        }
+        .priority-badge.high {
+            @apply bg-orange-100 text-orange-800;
+        }
+        .priority-badge.urgent {
+            @apply bg-red-100 text-red-800;
+        }
+        
+        .status-badge {
+            @apply px-2 py-1 text-xs font-medium rounded-full;
+        }
+        .status-badge.pending {
+            @apply bg-yellow-100 text-yellow-800;
+        }
+        .status-badge.in-progress {
+            @apply bg-blue-100 text-blue-800;
+        }
+        .status-badge.resolved {
+            @apply bg-green-100 text-green-800;
+        }
+        
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</body>
+</html>

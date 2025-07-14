@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Registration - FoodNow</title>
+    <link href="./src/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-2xl w-full">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-500 rounded-2xl mb-4">
+                    <span class="text-2xl">🏪</span>
+                </div>
+                <h1 class="text-3xl font-bold text-secondary-500 mb-2">Join FoodNow</h1>
+                <p class="text-gray-600">Partner with us and grow your restaurant business</p>
+            </div>
+
+            <!-- Registration Form -->
+            <div class="card p-8 mb-6">
+                <h2 class="text-2xl font-bold text-secondary-500 mb-6 text-center">Restaurant Registration</h2>
+                <form id="registerForm" class="space-y-6">
+                    <!-- Restaurant Information -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Restaurant Information</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Restaurant Name</label>
+                                <input 
+                                    type="text" 
+                                    id="restaurantName" 
+                                    class="input-field" 
+                                    placeholder="Amazing Restaurant"
+                                    required
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Owner Name</label>
+                                <input 
+                                    type="text" 
+                                    id="ownerName" 
+                                    class="input-field" 
+                                    placeholder="John Doe"
+                                    required
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    class="input-field" 
+                                    placeholder="restaurant@example.com"
+                                    required
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                                <input 
+                                    type="tel" 
+                                    id="phone" 
+                                    class="input-field" 
+                                    placeholder="+91 9876543210"
+                                    required
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Date of Establishment</label>
+                                <input 
+                                    type="date" 
+                                    id="establishmentDate" 
+                                    class="input-field"
+                                    required
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Cuisine Type</label>
+                                <select id="cuisineType" class="input-field" required>
+                                    <option value="">Select Cuisine</option>
+                                    <option value="indian">Indian</option>
+                                    <option value="chinese">Chinese</option>
+                                    <option value="italian">Italian</option>
+                                    <option value="mexican">Mexican</option>
+                                    <option value="thai">Thai</option>
+                                    <option value="multi-cuisine">Multi-Cuisine</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address Information -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Address Information</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Complete Address</label>
+                                <textarea 
+                                    id="address" 
+                                    class="input-field" 
+                                    rows="3" 
+                                    placeholder="Building name, Street, Area"
+                                    required
+                                ></textarea>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                                    <input 
+                                        type="text" 
+                                        id="city" 
+                                        class="input-field" 
+                                        placeholder="Bangalore"
+                                        required
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">State</label>
+                                    <input 
+                                        type="text" 
+                                        id="state" 
+                                        class="input-field" 
+                                        placeholder="Karnataka"
+                                        required
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">PIN Code</label>
+                                    <input 
+                                        type="text" 
+                                        id="pincode" 
+                                        class="input-field" 
+                                        placeholder="560001"
+                                        required
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documents -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Documents</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Restaurant License</label>
+                                <input 
+                                    type="file" 
+                                    id="license" 
+                                    class="input-field" 
+                                    accept="image/*,.pdf"
+                                    required
+                                >
+                                <p class="text-xs text-gray-500 mt-1">Upload restaurant license or permit</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Food Safety Certificate</label>
+                                <input 
+                                    type="file" 
+                                    id="foodSafety" 
+                                    class="input-field" 
+                                    accept="image/*,.pdf"
+                                    required
+                                >
+                                <p class="text-xs text-gray-500 mt-1">FSSAI certificate required</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Setup -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Account Setup</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    class="input-field" 
+                                    placeholder="••••••••"
+                                    required
+                                >
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                                <input 
+                                    type="password" 
+                                    id="confirmPassword" 
+                                    class="input-field" 
+                                    placeholder="••••••••"
+                                    required
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="flex items-start">
+                        <input 
+                            type="checkbox" 
+                            id="terms" 
+                            class="mt-1 rounded border-gray-300 text-primary-500"
+                            required
+                        >
+                        <label for="terms" class="ml-3 text-sm text-gray-600">
+                            I agree to the <a href="#" class="text-primary-500 hover:text-primary-600">Terms & Conditions</a> 
+                            and <a href="#" class="text-primary-500 hover:text-primary-600">Privacy Policy</a>. 
+                            I understand that my application will be reviewed before approval.
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary w-full">
+                        Submit Application
+                    </button>
+                </form>
+            </div>
+
+            <!-- Login Link -->
+            <div class="text-center">
+                <p class="text-gray-600">
+                    Already have an account? 
+                    <a href="restaurant-login.html" class="text-primary-500 hover:text-primary-600 font-medium">Sign in</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Auth } from './src/auth.js';
+        import { Animations } from './src/animations.js';
+
+        // Animate page elements
+        document.addEventListener('DOMContentLoaded', () => {
+            Animations.fadeIn('.card');
+        });
+
+        // Handle registration form
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            const formData = {
+                restaurantName: document.getElementById('restaurantName').value,
+                ownerName: document.getElementById('ownerName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                establishmentDate: document.getElementById('establishmentDate').value,
+                cuisineType: document.getElementById('cuisineType').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                pincode: document.getElementById('pincode').value,
+                password
+            };
+            
+            // Save pending application
+            const pendingApplications = JSON.parse(localStorage.getItem('pending_restaurant_applications') || '[]');
+            const application = {
+                id: Date.now(),
+                ...formData,
+                status: 'pending',
+                submittedAt: new Date().toISOString()
+            };
+            
+            pendingApplications.push(application);
+            localStorage.setItem('pending_restaurant_applications', JSON.stringify(pendingApplications));
+            
+            // Show success message
+            alert('Application submitted successfully! You will be notified once approved.');
+            window.location.href = 'restaurant-login.html';
+        });
+    </script>
+</body>
+</html>
